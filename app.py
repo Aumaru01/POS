@@ -116,6 +116,7 @@ if clicked > -1:
     # เพิ่มสินค้าลงตะกร้า
     if pid not in st.session_state.cart:
         st.session_state.cart[pid] = {
+            "ID": pid,
             "name": product["name"],
             "price": float(product["price"]),
             "qty": 1
@@ -123,11 +124,15 @@ if clicked > -1:
     else:
         st.session_state.cart[pid]["qty"] += 1
 
-    st.toast(f"➕ {product['name']} added")
+    st.toast(f"➕ {product['name']} added", duration = "infinite")
 
     st.session_state.gallery_key += 1 
     st.session_state.last_click_time = time.time()
     
+    st.divider()
+    st.success(f"➕ {product['name']} added")
+    st.divider()
+    time.sleep(.25)
     st.rerun()
 
 # =====================================================
@@ -149,7 +154,9 @@ else:
         c2.write(f"x {item['qty']}")
         c3.write(f"{line:.2f} ฿")
 
+    st.divider()
     st.subheader(f"💰 Total: {total:.2f} ฿")
+    st.divider()
 
     colA, colB = st.columns(2)
 
@@ -192,7 +199,7 @@ else:
 # ➕ ADD PRODUCT (ADMIN)
 # =====================================================
 st.divider()
-pwd = st.text_input("Admin password", type="password")
+pwd = st.text_input("Admin Section", type="password")
 
 if pwd == ADMIN_PASSWORD:
     with st.expander("➕ Add Product"):
@@ -203,7 +210,8 @@ if pwd == ADMIN_PASSWORD:
             submit = st.form_submit_button("Add")
 
             if submit:
-                pid = str(uuid.uuid4())[:8]
+                # pid = str(uuid.uuid4())[:8]
+                pid = len(df)+1
                 image_name = ""
 
                 if image_file:
@@ -221,5 +229,13 @@ if pwd == ADMIN_PASSWORD:
                 df.to_csv(PRODUCT, index=False)
 
                 st.success("✅ Product added")
+                time.sleep(2)
                 st.session_state.gallery_key += 1 
                 st.rerun()
+
+    with st.expander("🧾 View Database"):
+        try:
+            record_df_for_view = pd.read_csv(RECORD)
+            st.dataframe(record_df_for_view)
+        except FileNotFoundError as e:
+            st.error(f"File not found {e}")
