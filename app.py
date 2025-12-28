@@ -31,8 +31,8 @@ def build_item_list(cart: dict):
 # =====================================================
 # Page config
 # =====================================================
-st.set_page_config(page_title="POS", layout="wide")
-st.title("🧾 Simple POS")
+st.set_page_config(page_title="T.POS", layout="wide")
+st.title("🧾 T.POS")
 
 # =====================================================
 # Load path config
